@@ -1,0 +1,38 @@
+series tracker db
+
+user
+	username
+	password
+	email
+
+series 
+	id
+	name
+	imbd
+
+season
+	id
+	series_id
+	season_number
+
+episode
+	id
+	season_id
+	episode_number
+
+genre
+	id
+	nam
+
+list - Links lists to a user. Users can have many lists.
+	id
+	user_id
+
+list_series - Links series to a list. series can link to many lists.
+	id
+	series_id
+	list_id
+
+
+
+
