@@ -9,7 +9,7 @@ var User = bookshelf.Model.extend({
 			console.log("Hashing Password from " + model.attributes.password);
 			
 			// bcrypt.hash(password,'asdfasdf',null,function (err, hash) {
-				model.attributes.password = "23849534gn34g3894g3";
+				model.attributes.password = "fakehashedpassword";
 				console.log("Hashed? Password " + model.attributes.password);
 			// });
 

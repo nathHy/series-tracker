@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: showtracker
 -- ------------------------------------------------------
--- Server version	5.6.27-0ubuntu0.14.04.1
+-- Server version	5.6.27-0ubuntu0.15.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -27,7 +27,7 @@ CREATE TABLE `episode` (
   `season_id` int(11) DEFAULT NULL,
   `episode_number` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `season_id` (`season_id`),
+  UNIQUE KEY `season_id` (`season_id`,`episode_number`),
   CONSTRAINT `episode_ibfk_1` FOREIGN KEY (`season_id`) REFERENCES `season` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -50,19 +50,10 @@ DROP TABLE IF EXISTS `genre`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `genre` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
+  `name` varchar(255) UNIQUE DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `genre`
---
-
-LOCK TABLES `genre` WRITE;
-/*!40000 ALTER TABLE `genre` DISABLE KEYS */;
-/*!40000 ALTER TABLE `genre` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `list`
@@ -129,7 +120,7 @@ CREATE TABLE `season` (
   `series_id` int(11) DEFAULT NULL,
   `season_number` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `series_id` (`series_id`),
+  UNIQUE KEY `series_id` (`series_id`,`season_number`),
   CONSTRAINT `season_ibfk_1` FOREIGN KEY (`series_id`) REFERENCES `series` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -152,7 +143,7 @@ DROP TABLE IF EXISTS `series`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `series` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
+  `name` varchar(255) UNIQUE NOT NULL,
   `imdb` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -176,10 +167,11 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL  UNIQUE DEFAULT '',
+  `username` varchar(255) NOT NULL DEFAULT '',
   `password` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -201,4 +193,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-01-09 14:43:55
+-- Dump completed on 2016-01-10  2:11:42
