@@ -1,9 +1,33 @@
 var express = require('express');
 var Series = require('../../models/series.js')
+var Season = require('../../models/season.js')
 var rh = require('../../helpers/routeHelper.js')
 var router = express.Router();
 
 console.log("Router")
+
+router.param('series_id', function(req,res,next,series_id) {
+	var seriesId = Number(req.params.series_id)
+	if (!rh.isInt(seriesId)) {
+		res.json({error:true,data:{message:'Please provide a integer for the ID'}});
+		return;
+	}
+	
+	Series.forge({id:seriesId})
+	.fetch({id:seriesId,require:true})
+	.then(function (series) {
+		req.series=series;
+		next();
+	})
+	.catch(function (err) {
+		if (err.message == "EmptyResponse")
+			res.json({error:true,data:{message:'No series by id ' + seriesId}});
+		else 
+			next(err);
+	})
+
+})
+
 router.route('/')
 .get(function (req, res) {
 			Series.fetchAll().then(function (series) {
@@ -31,25 +55,27 @@ router.route('/')
     }); 
 });
 router.get('/:series_id', function(req, res) {
-	var seriesId = req.params.series_id
-	Series.forge({id:seriesId})
-	.fetch({id:seriesId,require:true})
-	.then(function (series) {
-		console.log(series)
-		res.json(rh.sendJSON(false,series.toJSON()));
-	})
-	.catch(function (err) {
-		res.json(rh.sendJSON(true,{message:err.message}));
-	})
+	res.json(rh.sendJSON(true,req.series.toJSON()));
 });
 
-router.get('/:series_id/season/', function(req, res) {
-	res.send("Getting list of seasons on series with id " + req.params.series_id);
+router.route('/:series_id/season/')
+.get(function(req, res) {
+	Season.forge()
+	.fetch({require:true})
+	.then(function (seasons) {
+		res.json({error:false,data:seasons.toJSON()});
+	})
+	.catch(function (err) {
+		if (err.message == "EmptyResponse")
+			res.json({error:true,data:{message:'No seasons for series with id ' + req.series.get('id')}});
+		else 
+			res.json({error:true,data:{message:err.message}});
+	})
 });
 
 
 router.get('/:series_id/season/:season_id', function(req, res) {
-	res.send("Getting details on series with id " + req.params.series_id + " and season id of " + req.params.season_id );
+
 });
 
 router.get('/:series_id/season/:season_id/episode', function(req, res) {

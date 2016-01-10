@@ -13,4 +13,10 @@ function sendJSON (error,data) {
 	return json
 }
 
+function isInt (input) {
+	// console.log(typeof(input),input);
+	return Number(input) === input && input % 1 === 0;
+}
+
 exports.sendJSON = sendJSON;
+exports.isInt = isInt;
